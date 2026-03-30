@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+chinatrip.db
+*.db
+
+# Node
+node_modules/
+dist/
+.DS_Store
+
+# Local env
+.env.local
+.env.production
