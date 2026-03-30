@@ -27,8 +27,9 @@ export default function MapPage() {
   const activeRef    = useRef(null)
   const sidebarRef   = useRef(null)
 
-  const { transports, hotels } = useStore()
+  const { transports, hotels, theme } = useStore()
   const [activeId, setActiveId] = useState(null)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   // Only include legs that have real coordinates stored
   const legs = transports
@@ -209,18 +210,41 @@ export default function MapPage() {
 
   const flyTo = (center, zoom) => mapRef.current?.flyTo({ center, zoom, duration:1400, essential:true })
 
+  const isJoe = theme === 'joe'
+  const accentColor = isJoe ? '#4ade80' : 'var(--red)'
+
   return (
-    <div style={{ display:'flex', height:'calc(100vh - var(--nav-h))', overflow:'hidden' }}>
+    <div style={{ display:'flex', height:'calc(100vh - var(--nav-h))', overflow:'hidden', position:'relative' }}>
+
+      {/* ── Sidebar toggle button (always visible) ── */}
+      <button onClick={() => setSidebarOpen(o => !o)} style={{
+        position:'absolute', top:12,
+        left: sidebarOpen ? 292 : 12,
+        zIndex:50, transition:'left 0.3s ease',
+        background: isJoe ? '#2a2a2a' : 'white',
+        border: `1px solid ${isJoe ? 'rgba(74,222,128,0.3)' : 'rgba(0,0,0,0.15)'}`,
+        borderRadius:8, width:32, height:32,
+        display:'flex', alignItems:'center', justifyContent:'center',
+        cursor:'pointer', boxShadow:'0 2px 8px rgba(0,0,0,0.2)',
+        color: isJoe ? '#4ade80' : 'var(--red)',
+        fontSize:14, fontWeight:700,
+      }}>
+        {sidebarOpen ? '◀' : '▶'}
+      </button>
 
       {/* ── Sidebar ── */}
       <div ref={sidebarRef} style={{
-        width:280, flexShrink:0,
-        background:'var(--card-bg)', borderRight:'1px solid var(--border)',
-        overflowY:'auto', display:'flex', flexDirection:'column',
+        width: sidebarOpen ? 280 : 0,
+        flexShrink:0, overflow:'hidden',
+        background:'var(--card-bg)', borderRight: sidebarOpen ? '1px solid var(--border)' : 'none',
+        overflowY: sidebarOpen ? 'auto' : 'hidden',
+        display:'flex', flexDirection:'column',
+        transition:'width 0.3s ease',
       }}>
         <div style={{
           padding:'14px 16px 10px', borderBottom:'1px solid var(--border)',
           position:'sticky', top:0, background:'var(--card-bg)', zIndex:2,
+          minWidth:280,
         }}>
           <div style={{ fontFamily:'Playfair Display,serif', fontSize:15, fontWeight:700, color:'var(--ink)' }}>Route Legs</div>
           <div style={{ fontSize:11, color:'var(--ink-soft)', marginTop:2 }}>Hover or click to highlight on map</div>
