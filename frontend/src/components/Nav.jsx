@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore'
 import toast from 'react-hot-toast'
+import LoginModal from './LoginModal'
 
 const TABS = [
   { id:'dashboard', label:'🏮 Dashboard' },
@@ -12,9 +13,10 @@ const TABS = [
 ]
 
 export default function Nav() {
-  const { activeTab, setTab, currency, setCurrency, exchangeRate, updateExchangeRate, theme, setTheme } = useStore()
+  const { activeTab, setTab, currency, setCurrency, exchangeRate, updateExchangeRate, theme, setTheme, isAuthed, logout } = useStore()
   const isJoe = theme === 'joe'
   const [menuOpen, setMenuOpen] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
 
   const handleRateUpdate = async () => {
     const r = prompt(`Current rate: 1 CAD = ${exchangeRate} CNY\nEnter new rate:`)
@@ -164,6 +166,23 @@ export default function Nav() {
           position:'fixed', inset:0, zIndex:98, background:'transparent',
         }}/>
       )}
+
+      {/* Auth button */}
+      <button onClick={() => isAuthed ? logout() : setShowLogin(true)} style={{
+        display:'flex', alignItems:'center', gap:5, flexShrink:0,
+        background: isAuthed
+          ? (isJoe ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.1)')
+          : (isJoe ? 'rgba(232,97,79,0.1)' : 'rgba(255,255,255,0.15)'),
+        border: isAuthed
+          ? (isJoe ? '1px solid rgba(74,222,128,0.3)' : '1px solid rgba(255,255,255,0.2)')
+          : (isJoe ? '1px solid rgba(232,97,79,0.4)' : '1px solid rgba(255,255,255,0.3)'),
+        borderRadius:20, padding:'4px 12px', cursor:'pointer', fontSize:12,
+        color: isAuthed ? (isJoe ? '#4ade80' : '#D4A843') : (isJoe ? '#e8614f' : 'white'),
+      }}>
+        {isAuthed ? '✏️ Editing' : '🔒 View only'}
+      </button>
+
+      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
 
       {/* Mobile-only CSS */}
       <style>{`

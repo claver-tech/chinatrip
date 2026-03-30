@@ -12,7 +12,7 @@ const PHASE_CONFIG = [
 
 function DayCard({ day, index }) {
   const [open, setOpen] = useState(false)
-  const { theme, updateDay, deleteDay, fmt } = useStore()
+  const { theme, updateDay, deleteDay, fmt, isAuthed } = useStore()
   const isJoe = theme === 'joe'
 
   const update = useCallback((field, val) => updateDay(day.id, field, val), [day.id])
@@ -86,7 +86,8 @@ function DayCard({ day, index }) {
                 ].map(({ label, field }) => (
                   <label key={field} style={{ display:'flex', flexDirection:'column', gap:4 }}>
                     <span style={{ fontSize:10, textTransform:'uppercase', letterSpacing:'0.05em', color:'var(--ink-soft)', fontWeight:600 }}>{label}</span>
-                    <input defaultValue={day[field]} onBlur={e => update(field, e.target.value)} />
+                    <input defaultValue={day[field]} onBlur={e => update(field, e.target.value)}
+                      readOnly={!isAuthed} />
                   </label>
                 ))}
                 <label style={{ display:'flex', flexDirection:'column', gap:4 }}>
@@ -105,7 +106,8 @@ function DayCard({ day, index }) {
                     <div style={{ padding:12, display:'flex', flexDirection:'column', gap:10 }}>
                       <label style={{ display:'flex', flexDirection:'column', gap:3 }}>
                         <span style={{ fontSize:10, textTransform:'uppercase', letterSpacing:'0.05em', color:'var(--ink-soft)', fontWeight:500 }}>Activities</span>
-                        <textarea defaultValue={day[ph.key]} onBlur={e => update(ph.key, e.target.value)} />
+                        <textarea defaultValue={day[ph.key]} onBlur={e => update(ph.key, e.target.value)}
+                      readOnly={!isAuthed} />
                       </label>
                       <label style={{ display:'flex', flexDirection:'column', gap:3 }}>
                         <span style={{ fontSize:10, textTransform:'uppercase', letterSpacing:'0.05em', color:'var(--ink-soft)', fontWeight:500 }}>Food</span>
@@ -139,7 +141,7 @@ function DayCard({ day, index }) {
 }
 
 export default function Itinerary() {
-  const { theme, days, reorderDays, addDay } = useStore()
+  const { theme, days, reorderDays, addDay, isAuthed } = useStore()
   const [filter, setFilter] = useState('all')
 
   const cities = [...new Set(days.map(d => d.city.split('→')[0].trim()))]
@@ -171,7 +173,7 @@ export default function Itinerary() {
           color: theme==='joe' ? '#4ade80' : 'white',
           border: theme==='joe' ? '1px solid rgba(74,222,128,0.3)' : 'none',
           borderRadius:10, padding:'9px 18px', fontWeight:600, fontSize:13, cursor:'pointer',
-        }}>+ Add Day</button>
+        }}style={{ display: isAuthed ? undefined : 'none' }}>+ Add Day</button>
       </div>
 
       {/* City filter */}

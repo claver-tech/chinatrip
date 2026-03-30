@@ -3,7 +3,7 @@ import { useStore } from '../store/useStore'
 import toast from 'react-hot-toast'
 
 function HotelCard({ hotel }) {
-  const { theme, updateHotel, deleteHotel, fmt } = useStore()
+  const { theme, updateHotel, deleteHotel, fmt, isAuthed } = useStore()
   const booked = hotel.status === 'BOOKED' || hotel.status === '✅ BOOKED'
   const u = (f, v) => updateHotel(hotel.id, f, v)
 
@@ -31,25 +31,30 @@ function HotelCard({ hotel }) {
 
       <div style={{ padding:'14px 18px', display:'flex', flexDirection:'column', gap:12 }}>
         <Row label="Check-in">
-          <input defaultValue={hotel.checkin} onBlur={e => u('checkin', e.target.value)} />
+          <input defaultValue={hotel.checkin} onBlur={e => u('checkin', e.target.value)}
+                      readOnly={!isAuthed} />
         </Row>
         <Row label="Check-out">
-          <input defaultValue={hotel.checkout} onBlur={e => u('checkout', e.target.value)} />
+          <input defaultValue={hotel.checkout} onBlur={e => u('checkout', e.target.value)}
+                      readOnly={!isAuthed} />
         </Row>
         <Row label="Nights">
           <input type="number" defaultValue={hotel.nights} onBlur={e => u('nights', parseInt(e.target.value)||1)} />
         </Row>
         <Row label="Hotel Name / Options">
-          <textarea defaultValue={hotel.hotel_name} onBlur={e => u('hotel_name', e.target.value)} />
+          <textarea defaultValue={hotel.hotel_name} onBlur={e => u('hotel_name', e.target.value)}
+                      readOnly={!isAuthed} />
         </Row>
         <Row label="Area / Neighbourhood">
-          <input defaultValue={hotel.area} onBlur={e => u('area', e.target.value)} />
+          <input defaultValue={hotel.area} onBlur={e => u('area', e.target.value)}
+                      readOnly={!isAuthed} />
         </Row>
         <Row label="Cost (total stay)">
           <CostInput costCny={hotel.cost_cny} onSave={v => u('cost_cny', v)} />
         </Row>
         <Row label="Confirmation #">
-          <input defaultValue={hotel.confirmation} onBlur={e => u('confirmation', e.target.value)} />
+          <input defaultValue={hotel.confirmation} onBlur={e => u('confirmation', e.target.value)}
+                      readOnly={!isAuthed} />
         </Row>
 
         {/* Status + Breakfast */}
@@ -93,7 +98,8 @@ function HotelCard({ hotel }) {
         </div>
 
         <Row label="Notes">
-          <input defaultValue={hotel.notes} onBlur={e => u('notes', e.target.value)} />
+          <input defaultValue={hotel.notes} onBlur={e => u('notes', e.target.value)}
+                      readOnly={!isAuthed} />
         </Row>
 
         <div style={{ display:'flex', justifyContent:'flex-end' }}>

@@ -234,7 +234,8 @@ function TransportRow({ t, idx, provided, snapshot }) {
           gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))', gap:12,
         }}>
           <F label="Date">
-            <input defaultValue={t.date} onBlur={e => u('date', e.target.value)} />
+            <input defaultValue={t.date} onBlur={e => u('date', e.target.value)}
+                      readOnly={!isAuthed} />
           </F>
 
           {/* Location search fields */}
@@ -260,16 +261,20 @@ function TransportRow({ t, idx, provided, snapshot }) {
           </F>
 
           <F label="Depart">
-            <input defaultValue={t.dep_time} onBlur={e => u('dep_time', e.target.value)} />
+            <input defaultValue={t.dep_time} onBlur={e => u('dep_time', e.target.value)}
+                      readOnly={!isAuthed} />
           </F>
           <F label="Arrive">
-            <input defaultValue={t.arr_time} onBlur={e => u('arr_time', e.target.value)} />
+            <input defaultValue={t.arr_time} onBlur={e => u('arr_time', e.target.value)}
+                      readOnly={!isAuthed} />
           </F>
           <F label="Duration">
-            <input defaultValue={t.duration} onBlur={e => u('duration', e.target.value)} />
+            <input defaultValue={t.duration} onBlur={e => u('duration', e.target.value)}
+                      readOnly={!isAuthed} />
           </F>
           <F label="Flight / Train #">
-            <input defaultValue={t.flight_num} onBlur={e => u('flight_num', e.target.value)} />
+            <input defaultValue={t.flight_num} onBlur={e => u('flight_num', e.target.value)}
+                      readOnly={!isAuthed} />
           </F>
 
           <F label="Type">
@@ -292,7 +297,8 @@ function TransportRow({ t, idx, provided, snapshot }) {
           </F>
 
           <F label="Notes / Booking Ref" style={{ gridColumn:'span 2' }}>
-            <input defaultValue={t.notes} onBlur={e => u('notes', e.target.value)} />
+            <input defaultValue={t.notes} onBlur={e => u('notes', e.target.value)}
+                      readOnly={!isAuthed} />
           </F>
 
           <div style={{ display:'flex', alignItems:'flex-end' }}>

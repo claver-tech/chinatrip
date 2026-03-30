@@ -8,7 +8,7 @@ const CAT_ICONS = {
 }
 
 function FinanceCat({ category, items }) {
-  const { updateFinanceItem, deleteFinanceItem, addFinanceItem, fmt, theme } = useStore()
+  const { updateFinanceItem, deleteFinanceItem, addFinanceItem, fmt, theme, isAuthed } = useStore()
   const isJoe = theme === 'joe'
   const icon  = items[0]?.category_icon || CAT_ICONS[category] || '💰'
   const total = items.reduce((s,i) => s + (i.cost_cny||0), 0)
@@ -41,6 +41,7 @@ function FinanceCat({ category, items }) {
           <div key={item.id} style={{ display:'flex', alignItems:'center', gap:8 }}>
             <input defaultValue={item.label}
               onBlur={e => updateFinanceItem(item.id, 'label', e.target.value)}
+                      readOnly={!isAuthed}
               style={{ flex:1, fontSize:12, padding:'5px 8px' }} />
             <CostInput
               costCny={item.cost_cny}

@@ -2,6 +2,8 @@ import { create } from 'zustand'
 import axios from 'axios'
 
 const API = import.meta.env.VITE_API_URL || '/api'
+const EDIT_PASSWORD = 'Jo@nn@312!'
+const SESSION_KEY = 'chinatrip_authed'
 
 export const useStore = create((set, get) => ({
   // ── State ──────────────────────────────────────────────────
@@ -16,6 +18,21 @@ export const useStore = create((set, get) => ({
   loading: false,
   activeTab: 'dashboard',
   seeded: false,
+  isAuthed: sessionStorage.getItem(SESSION_KEY) === 'true',
+
+  // ── Auth ───────────────────────────────────────────────────
+  login: (password) => {
+    if (password === EDIT_PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, 'true')
+      set({ isAuthed: true })
+      return true
+    }
+    return false
+  },
+  logout: () => {
+    sessionStorage.removeItem(SESSION_KEY)
+    set({ isAuthed: false })
+  },
 
   // ── Actions ────────────────────────────────────────────────
   setTab: (tab) => set({ activeTab: tab }),
@@ -76,13 +93,11 @@ export const useStore = create((set, get) => ({
 
   // ── Days ───────────────────────────────────────────────────
   addDay: async () => {
+    if (!get().isAuthed) return
     const days = get().days
     const newDay = {
-      day_num: days.length + 1,
-      date: 'New Date',
-      city: 'New City',
-      transport: '—',
-      morning: '', afternoon: '', evening: '',
+      day_num: days.length + 1, date: 'New Date', city: 'New City',
+      transport: '—', morning: '', afternoon: '', evening: '',
       food_morning: '', food_afternoon: '', food_evening: '',
       cost_cny: 0, joe_note: '', sort_order: days.length,
     }
@@ -92,6 +107,7 @@ export const useStore = create((set, get) => ({
   },
 
   updateDay: async (id, field, value) => {
+    if (!get().isAuthed) return
     const days = get().days.map(d => d.id === id ? { ...d, [field]: value } : d)
     set({ days })
     const day = days.find(d => d.id === id)
@@ -100,17 +116,20 @@ export const useStore = create((set, get) => ({
   },
 
   deleteDay: async (id) => {
+    if (!get().isAuthed) return
     await axios.delete(`${API}/days/${id}`)
     set({ days: get().days.filter(d => d.id !== id) })
   },
 
   reorderDays: async (newDays) => {
+    if (!get().isAuthed) return
     set({ days: newDays })
     await axios.post(`${API}/days/reorder`, { ids: newDays.map(d => d.id) })
   },
 
   // ── Hotels ─────────────────────────────────────────────────
   addHotel: async () => {
+    if (!get().isAuthed) return
     const newHotel = {
       city: 'New City', area: '', checkin: '', checkout: '',
       nights: 1, hotel_name: '', status: 'Not Booked',
@@ -122,6 +141,7 @@ export const useStore = create((set, get) => ({
   },
 
   updateHotel: async (id, field, value) => {
+    if (!get().isAuthed) return
     const hotels = get().hotels.map(h => h.id === id ? { ...h, [field]: value } : h)
     set({ hotels })
     const hotel = hotels.find(h => h.id === id)
@@ -130,17 +150,17 @@ export const useStore = create((set, get) => ({
   },
 
   deleteHotel: async (id) => {
+    if (!get().isAuthed) return
     await axios.delete(`${API}/hotels/${id}`)
     set({ hotels: get().hotels.filter(h => h.id !== id) })
   },
 
   // ── Transports ─────────────────────────────────────────────
   addTransport: async () => {
+    if (!get().isAuthed) return
     const newT = {
-      leg_num: get().transports.length + 1,
-      date: '', type: 'Flight',
-      from_city: '', to_city: '',
-      dep_time: '', arr_time: '', duration: '',
+      leg_num: get().transports.length + 1, date: '', type: 'Flight',
+      from_city: '', to_city: '', dep_time: '', arr_time: '', duration: '',
       flight_num: '', cost_cny: 0, status: 'Not Booked', notes: '',
     }
     const res = await axios.post(`${API}/transports`, newT)
@@ -149,6 +169,7 @@ export const useStore = create((set, get) => ({
   },
 
   updateTransport: async (id, field, value) => {
+    if (!get().isAuthed) return
     const transports = get().transports.map(t => t.id === id ? { ...t, [field]: value } : t)
     set({ transports })
     const t = transports.find(t => t.id === id)
@@ -157,17 +178,20 @@ export const useStore = create((set, get) => ({
   },
 
   deleteTransport: async (id) => {
+    if (!get().isAuthed) return
     await axios.delete(`${API}/transports/${id}`)
     set({ transports: get().transports.filter(t => t.id !== id) })
   },
 
   reorderTransports: async (newT) => {
+    if (!get().isAuthed) return
     set({ transports: newT })
     await axios.post(`${API}/transports/reorder`, { ids: newT.map(t => t.id) })
   },
 
   // ── Finance ────────────────────────────────────────────────
   updateFinanceItem: async (id, field, value) => {
+    if (!get().isAuthed) return
     const finance = get().finance.map(f => f.id === id ? { ...f, [field]: value } : f)
     set({ finance })
     const item = finance.find(f => f.id === id)
@@ -176,12 +200,14 @@ export const useStore = create((set, get) => ({
   },
 
   addFinanceItem: async (category, icon) => {
+    if (!get().isAuthed) return
     const newItem = { category, category_icon: icon, label: 'New item', cost_cny: 0, paid: false }
     const res = await axios.post(`${API}/finance`, newItem)
     set({ finance: [...get().finance, res.data] })
   },
 
   deleteFinanceItem: async (id) => {
+    if (!get().isAuthed) return
     await axios.delete(`${API}/finance/${id}`)
     set({ finance: get().finance.filter(f => f.id !== id) })
     get().refreshSummary()
@@ -189,6 +215,7 @@ export const useStore = create((set, get) => ({
 
   // ── Exchange rate ──────────────────────────────────────────
   updateExchangeRate: async (rate) => {
+    if (!get().isAuthed) return
     const n = parseFloat(rate)
     if (isNaN(n) || n <= 0) return
     set({ exchangeRate: n })
