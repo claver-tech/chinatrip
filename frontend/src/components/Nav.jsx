@@ -63,7 +63,7 @@ export default function Nav() {
         </div>
 
         {/* Rate */}
-        <button className="nav-rate" onClick={handleRateUpdate} style={{
+        <button className="nav-rate nav-hide-sm" onClick={handleRateUpdate} style={{
           background: isJoe ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.1)',
           border: isJoe ? '1px solid rgba(255,255,255,0.1)' : 'none',
           borderRadius:6, color: isJoe ? 'rgba(236,236,236,0.55)' : 'rgba(255,255,255,0.7)',
@@ -168,24 +168,28 @@ export default function Nav() {
       )}
 
       {/* Auth button */}
-      <button onClick={() => isAuthed ? logout() : setShowLogin(true)} style={{
-        display:'flex', alignItems:'center', gap:5, flexShrink:0,
+      <button onClick={() => isAuthed ? logout() : setShowLogin(true)} title={isAuthed ? 'Click to lock editing' : 'Click to unlock editing'} style={{
+        display:'flex', alignItems:'center', gap:4, flexShrink:0,
         background: isAuthed
           ? (isJoe ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.1)')
           : (isJoe ? 'rgba(232,97,79,0.1)' : 'rgba(255,255,255,0.15)'),
         border: isAuthed
           ? (isJoe ? '1px solid rgba(74,222,128,0.3)' : '1px solid rgba(255,255,255,0.2)')
           : (isJoe ? '1px solid rgba(232,97,79,0.4)' : '1px solid rgba(255,255,255,0.3)'),
-        borderRadius:20, padding:'4px 12px', cursor:'pointer', fontSize:12,
-        color: isAuthed ? (isJoe ? '#4ade80' : '#D4A843') : (isJoe ? '#e8614f' : 'white'),
+        borderRadius:20, padding:'4px 10px', cursor:'pointer', fontSize:11,
+        color: isAuthed ? (isJoe ? '#4ade80' : '#D4A843') : (isJoe ? '#e8614f' : 'rgba(255,255,255,0.85)'),
+        whiteSpace:'nowrap',
       }}>
-        {isAuthed ? '✏️ Editing' : '🔒 View only'}
+        {isAuthed ? '✏️' : '🔒'}
       </button>
 
       {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
 
       {/* Mobile-only CSS */}
       <style>{`
+        @media (max-width: 900px) {
+          .nav-hide-sm { display: none !important; }
+        }
         @media (max-width: 768px) {
           .desktop-tabs { display: none !important; }
           .nav-rate { display: none !important; }
