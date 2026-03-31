@@ -112,6 +112,26 @@ export default function Nav() {
           <span style={{ color: isJoe ? '#4ade80' : 'rgba(255,255,255,0.3)', fontWeight: isJoe ? 600 : 400 }}>J</span>
         </button>
 
+        {/* Auth button */}
+        <button onClick={() => isAuthed ? logout() : setShowLogin(true)}
+          title={isAuthed ? 'Click to lock editing' : 'Click to unlock editing'}
+          style={{
+            display:'flex', alignItems:'center', gap:4, flexShrink:0,
+            background: isAuthed
+              ? (isJoe ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.12)')
+              : 'rgba(255,255,255,0.08)',
+            border: isAuthed
+              ? (isJoe ? '1px solid rgba(74,222,128,0.35)' : '1px solid rgba(255,255,255,0.25)')
+              : '1px solid rgba(255,255,255,0.2)',
+            borderRadius:20, padding:'4px 10px', cursor:'pointer', fontSize:13,
+            color: isAuthed ? (isJoe ? '#4ade80' : '#D4A843') : 'rgba(255,255,255,0.8)',
+            whiteSpace:'nowrap',
+        }}>
+          {isAuthed ? '✏️' : '🔒'}
+        </button>
+
+        {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+
         {/* Hamburger — mobile only */}
         <button onClick={() => setMenuOpen(o => !o)} style={{
           display:'none', flexShrink:0,
@@ -166,24 +186,6 @@ export default function Nav() {
           position:'fixed', inset:0, zIndex:98, background:'transparent',
         }}/>
       )}
-
-      {/* Auth button */}
-      <button onClick={() => isAuthed ? logout() : setShowLogin(true)} title={isAuthed ? 'Click to lock editing' : 'Click to unlock editing'} style={{
-        display:'flex', alignItems:'center', gap:4, flexShrink:0,
-        background: isAuthed
-          ? (isJoe ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.1)')
-          : (isJoe ? 'rgba(232,97,79,0.1)' : 'rgba(255,255,255,0.15)'),
-        border: isAuthed
-          ? (isJoe ? '1px solid rgba(74,222,128,0.3)' : '1px solid rgba(255,255,255,0.2)')
-          : (isJoe ? '1px solid rgba(232,97,79,0.4)' : '1px solid rgba(255,255,255,0.3)'),
-        borderRadius:20, padding:'4px 10px', cursor:'pointer', fontSize:11,
-        color: isAuthed ? (isJoe ? '#4ade80' : '#D4A843') : (isJoe ? '#e8614f' : 'rgba(255,255,255,0.85)'),
-        whiteSpace:'nowrap',
-      }}>
-        {isAuthed ? '✏️' : '🔒'}
-      </button>
-
-      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
 
       {/* Mobile-only CSS */}
       <style>{`

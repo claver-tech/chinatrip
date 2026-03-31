@@ -196,10 +196,7 @@ export default function MapPage() {
           .setPopup(new mapboxgl.Popup({ offset:12, maxWidth:'240px' }).setHTML(popupHtml))
           .addTo(map)
 
-        const labelEl = document.createElement('div')
-        labelEl.innerHTML = city.name
-        labelEl.style.cssText = `font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;color:#1a1a1a;white-space:nowrap;text-shadow:0 0 3px white,0 0 3px white,0 0 3px white;pointer-events:none;margin-left:${size/2+4}px;margin-top:-6px`
-        new mapboxgl.Marker({ element: labelEl }).setLngLat([city.lng, city.lat]).addTo(map)
+        // Labels shown via popup on click/hover
       })
 
       layersReady.current = true
@@ -217,7 +214,7 @@ export default function MapPage() {
     <div style={{ display:'flex', height:'calc(100vh - var(--nav-h))', overflow:'hidden', position:'relative' }}>
 
       {/* ── Sidebar toggle button (always visible) ── */}
-      <button onClick={() => setSidebarOpen(o => !o)} style={{
+      <button onClick={() => { setSidebarOpen(o => !o); setTimeout(() => mapRef.current?.resize(), 320) }} style={{
         position:'absolute', top:12,
         left: sidebarOpen ? 292 : 12,
         zIndex:50, transition:'left 0.3s ease',
