@@ -95,6 +95,7 @@ export default function MapPage() {
     map.addControl(new mapboxgl.FullscreenControl(), 'top-right')
 
     map.on('load', () => {
+      map.resize()
       // Draw legs using stored coordinates
       legs.forEach((leg) => {
         const from   = [leg.from_lng, leg.from_lat]
